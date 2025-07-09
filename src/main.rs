@@ -1,28 +1,26 @@
+use crate::utils::Crud;
+use crate::utils::Repo;
+use crate::utils::User;
 use surrealdb::engine::remote::ws::Ws;
 use surrealdb::opt::auth::Root;
 use surrealdb::Surreal;
-use crate::utils::User;
-use crate::utils::Repo;
-use crate::utils::Crud;
 mod utils;
 
 #[tokio::main]
 async fn main() -> surrealdb::Result<()> {
+    // let cred_db = Surreal::new::<File>(("cred.db",)).await?;
+    // cred_db.use_ns("app").use_db("secrets").await?;
 
-    let cred_db = Surreal::new::<File>(("cred.db",)).await?;
-    cred_db.use_ns("app").use_db("secrets").await?;
-
-    let cipher_pw = encrypt(b"rootpw")?;                // your AES-GCM helper
-    cred_db
-        .update(("remote_cred","prod"))
-        .content(RemoteCred{
-            id:"prod".into(),
-            host:"wss://db.mycorp.com:8000".into(),
-            user:"root".into(),
-            pass:secrecy::SecretVec::new(cipher_pw),
-        })
-        .await?;
-
+    // let cipher_pw = encrypt(b"rootpw")?;                // your AES-GCM helper
+    // cred_db
+    //     .update(("remote_cred","prod"))
+    //     .content(RemoteCred{
+    //         id:"prod".into(),
+    //         host:"wss://db.mycorp.com:8000".into(),
+    //         user:"root".into(),
+    //         pass:secrecy::SecretVec::new(cipher_pw),
+    //     })
+    //     .await?;
 
     // Connect over WebSocket
     let db = Surreal::new::<Ws>("10.77.7.97:8000").await?;
@@ -43,10 +41,13 @@ async fn main() -> surrealdb::Result<()> {
     // create
 
     users
-        .create("ada".into(), User {
-            name: "Ada".into(),
-            email: "ada@lovelace.io".into(),
-        })
+        .create(
+            "ada".into(),
+            User {
+                name: "Ada".into(),
+                email: "ada@lovelace.io".into(),
+            },
+        )
         .await?;
 
     // read

@@ -11,7 +11,11 @@ pub struct Repo<'db, T> {
 
 impl<'db, T> Repo<'db, T> {
     pub fn new(db: &'db Surreal<Client>, table: &'static str) -> Self {
-        Self { db, table, _p: std::marker::PhantomData }
+        Self {
+            db,
+            table,
+            _p: std::marker::PhantomData,
+        }
     }
 }
 
@@ -51,10 +55,10 @@ pub struct User {
     pub email: String,
 }
 
-#[derive(Serialize, Deserialize)]
-struct RemoteCred {
-    id:   String,              // primary key (e.g. "prod")
-    host: String,              // "wss:db.mycorp.com:8000"
-    user: String,
-    pass: secrecy::SecretVec<u8>, // encrypted blob on disk
-}
+// #[derive(Serialize, Deserialize)]
+// pub struct RemoteCred {
+//     id: String,   // primary key (e.g. "prod")
+//     host: String, // "wss:db.mycorp.com:8000"
+//     user: String,
+//     pass: secrecy::SecretVec<u8>, // encrypted blob on disk
+// }
