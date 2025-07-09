@@ -1,0 +1,22 @@
+[package]
+name = "db_test"
+version = "0.1.0"
+edition = "2021"
+
+#[dependencies]
+#surrealdb      = "2.3.6"
+#serde          = { version = "1.0", features = ["derive"] }
+#tokio          = { version = "1.0", features = ["macros", "rt"] }
+#secrecy   = "0.8"      # zero-ize secrets in RAM
+#ring      = "0.17"     # quick AES-GCM helper (or use age, sodiumoxide, etc.)
+#
+#
+
+
+[dependencies]
+surrealdb = "2.3.6"
+tokio     = { version = "1", features = ["full"] }
+serde     = { version = "1", features = ["derive"] }
+secrecy   = "0.10.3"      # zero-ize secrets in RAM
+ring      = "0.17"
+async-trait = "0.1"
