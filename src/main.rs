@@ -3,24 +3,59 @@ use crate::utils::Repo;
 use crate::utils::User;
 use surrealdb::engine::remote::ws::Ws;
 use surrealdb::opt::auth::Root;
+use surrealdb::RecordId;
 use surrealdb::Surreal;
 mod utils;
+use serde::{Deserialize, Serialize};
+use surrealdb::engine::local::RocksDb;
+
+// #[derive(Debug, Serialize)]
+// struct Name<'a> {
+//     first: &'a str,
+//     last: &'a str,
+// }
+
+// #[derive(Debug, Serialize)]
+// struct Person<'a> {
+//     title: &'a str,
+//     name: Name<'a>,
+//     marketing: bool,
+// }
+
+// #[derive(Debug, Serialize)]
+// struct Responsibility {
+//     marketing: bool,
+// }
+
+// #[derive
+
+#[derive(Debug, Serialize)]
+struct Person<'a> {
+    name: &'a str,
+    marketing: bool,
+}
+
+#[derive(Debug, Deserialize)]
+struct Row {
+    id: RecordId,
+}
 
 #[tokio::main]
 async fn main() -> surrealdb::Result<()> {
-    // let cred_db = Surreal::new::<File>(("cred.db",)).await?;
-    // cred_db.use_ns("app").use_db("secrets").await?;
+    // start embedded DB in RAM
+    let db = Surreal::new::<RocksDb>("./data").await?;
+    db.use_ns("app").use_db("app").await?;
+    let _: Option<Row> = db
+        .create("person")
+        .content(Person {
+            name: "Tobie",
+            marketing: true,
+        })
+        .await?;
 
-    // let cipher_pw = encrypt(b"rootpw")?;                // your AES-GCM helper
-    // cred_db
-    //     .update(("remote_cred","prod"))
-    //     .content(RemoteCred{
-    //         id:"prod".into(),
-    //         host:"wss://db.mycorp.com:8000".into(),
-    //         user:"root".into(),
-    //         pass:secrecy::SecretVec::new(cipher_pw),
-    //     })
-    //     .await?;
+    // query
+    let rows: Vec<Row> = db.select("person").await?;
+    println!("{rows:#?}");
 
     // Connect over WebSocket
     let db = Surreal::new::<Ws>("10.77.7.97:8000").await?;
